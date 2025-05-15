@@ -1,0 +1,30 @@
+{
+  "family": "webserver-task",
+  "networkMode": "awsvpc",
+  "executionRoleArn": "arn:aws:iam::746669213823:role/ecsTaskExecutionRole",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "3072",
+  "containerDefinitions": [
+    {
+      "name": "web-server",
+      "image": "746669213823.dkr.ecr.us-west-2.amazonaws.com/simple-webserver:latest",
+      "portMappings": [
+        {
+          "containerPort": 5000,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/webserver-task",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}
+
