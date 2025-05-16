@@ -43,7 +43,7 @@ resource "aws_security_group" "ecs_service" {
   }
 }
 
-# ALB
+# Application Load Balancer (ALB)
 resource "aws_lb" "app_lb" {
   name               = "webserver-alb"
   internal           = false
@@ -72,7 +72,7 @@ resource "aws_lb_target_group" "app_tg" {
   }
 }
 
-# Listener
+# Listener for ALB
 resource "aws_lb_listener" "app_listener" {
   load_balancer_arn = aws_lb.app_lb.arn
   port              = 80
@@ -105,7 +105,34 @@ resource "aws_iam_role_policy_attachment" "ecs_task_exec_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-# Get caller identity
+# IAM Role for ECS Task (task_role_arn)
+resource "aws_iam_role" "ecs_task_role" {
+  name = "ecsTaskRole"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Principal = {
+        Service = "ecs-tasks.amazonaws.com"
+      },
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_role_policy" {
+  role       = aws_iam_role.ecs_task_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+# CloudWatch Log Group for ECS logs
+resource "aws_cloudwatch_log_group" "ecs_webserver" {
+  name              = "/ecs/webserver"
+  retention_in_days = 14
+}
+
+# Get current AWS account ID
 data "aws_caller_identity" "current" {}
 
 # ECS Task Definition
@@ -116,6 +143,7 @@ resource "aws_ecs_task_definition" "webserver" {
   cpu                      = "256"
   memory                   = "512"
   execution_role_arn       = aws_iam_role.ecs_task_exec.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
 
   container_definitions = jsonencode([
     {
@@ -124,7 +152,6 @@ resource "aws_ecs_task_definition" "webserver" {
       portMappings = [
         {
           containerPort = var.app_port,
-          hostPort      = var.app_port,
           protocol      = "tcp"
         }
       ],
@@ -162,4 +189,3 @@ resource "aws_ecs_service" "web" {
 
   depends_on = [aws_lb_listener.app_listener]
 }
-
