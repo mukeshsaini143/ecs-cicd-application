@@ -20,6 +20,11 @@ def return_csv():
     csv_data = "name,age\nJohn,30\nJane,25"
     return Response(csv_data, mimetype='text/csv')
 
+@app.route("/health")
+def health():
+    return "OK", 200
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
 
