@@ -1,0 +1,53 @@
+
+n ──────────────
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# Compiled bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Unit‑test / coverage output
+.coverage
+.cache/
+nosetests.xml
+pytest_cache/
+htmlcov/
+
+# Jupyter notebook checkpoints (if you ever add notebooks)
+.ipynb_checkpoints/
+
+# Local settings / IDE metadata
+*.sqlite3
+*.log
+.db/
+.idea/
+.vscode/
+*.swp
+*~ 
+
+# ────────────── Docker ──────────────
+# (Your image is built from context; exclude anything large/unneeded)
+*.tar
+*.img
+
+# ────────────── Node / Frontend (if you add React later) ──────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ────────────── AWS / Terraform (future‑proof) ──────────────
+# State files, plan cache, etc.
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# ────────────── Mac / Windows cruft ──────────────
+.DS_Store
+Thumbs.db
+
