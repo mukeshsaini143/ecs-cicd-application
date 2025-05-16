@@ -1,5 +1,6 @@
 
 # Simple Flask Webserver on AWS ECS with Terraform and CI/CD
+This repository contains a simple Flask web application deployed on AWS ECS Fargate behind an Application Load Balancer (ALB). Infrastructure is managed with Terraform, and CI/CD is automated using GitHub Actions.
 ## 1. Clone the repository
 
 To deploy this project run
